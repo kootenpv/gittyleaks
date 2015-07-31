@@ -139,7 +139,8 @@ def main():
     parser = argparse.ArgumentParser(description='Discover where your sensitive data has been leaked.') 
     parser.add_argument('-user', '-u', help='Provide the user/owner of the repo, only if cloning from github') 
     parser.add_argument('-repo', '-r', help='Provide the name of the repo, only if cloning from github') 
-    parser.add_argument('-host', '-h', help='If host is not github, provide the full url to clone') 
+    parser.add_argument('-link', '-l', 
+                        help='Default is to load from github, provide the full url (link) to clone that instead') 
     args = parser.parse_args() 
     gl = GittyLeak(args.__dict__)    
     gl.run() 
