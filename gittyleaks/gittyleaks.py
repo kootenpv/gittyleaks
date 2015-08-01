@@ -21,12 +21,10 @@ class GittyLeak():
         assignment = "(\\b|[ ._-])({})[ '\"]*(=|:)[ '\"]*([^'\" ]+)"
         self.assignment_pattern = assignment.format('|'.join(self.keywords))
 
-        excluded_value_chars = ['.', '[', 'none', 'true', 'false', 'null', 'default', 'example', 
-                                'username', 'email', 'password']    
+        self.excluded_value_chars = ['.', '[', 'none', 'true', 'false', 'null', 'default', 'example', 
+                                     'username', 'email', 'password']
 
-        self.min_value_length = 4
-        
-        self.excluded_value_chars = [x.lower() for x in excluded_value_chars]
+        self.min_value_length = 4 
 
         self.excluding = None
         self.revision_list = []
@@ -34,22 +32,28 @@ class GittyLeak():
         self.repo = None
         self.link = None
         self.find_anything = None 
-        self.case_insensitive = True
+        self.case_sensitive = False 
         self.show_revision_names = False
         self.print_banner = True
         self.delete = None
-        
+        self.matched_items = []
+        self.verbose = None 
+
+        self.apply_init_args(kwargs)
+
+    def apply_init_args(self, kwargs):
         for k,v in kwargs.items():
             setattr(self, k, v)
 
         if self.find_anything:     
             self.excluded_value_chars = []
-            self.case_insensitive = False
             
         if self.excluding is not None:
-            self.excluded_value_chars.extend(self.excluding)
-        
-        
+            self.excluded_value_chars.extend(self.excluding) 
+
+        if not self.case_sensitive:    
+            self.excluded_value_chars = [x.lower() for x in self.excluded_value_chars]    
+            
     def clone(self): 
         if self.link is not None:
             try:
@@ -91,7 +95,7 @@ class GittyLeak():
             if len(v) < self.min_value_length:
                 return False
             if self.excluded_value_chars:
-                if self.case_insensitive:
+                if not self.case_sensitive:
                     v = v.lower()
                 if not any([x in v for x in self.excluded_value_chars]):
                     return True
@@ -102,10 +106,10 @@ class GittyLeak():
     def get_matches_dict(self):
         matches = {}
         for match in self.get_word_matches():
-            if self.case_insensitive:
+            if self.case_sensitive:
+                m = re.search(self.assignment_pattern, match)
+            else: 
                 m = re.search(self.assignment_pattern, match, re.IGNORECASE)
-            else:
-                m = re.search(self.assignment_pattern, match)    
             if m: 
                 rev, fname = (re.search(self.revision_file_regex, match).groups()) 
                 key, _, value = m.groups()[1:]
@@ -117,18 +121,30 @@ class GittyLeak():
                     matches[identifier].append((appearance, rev))
         return matches
 
-    def print_matches(self, matches):
+
+    def printer(self): 
         if self.print_banner:
             print("""
             ----------------------------------------------------------------------------------------------
-            Bot Detective at work ...
+            gittyleaks' Bot Detective at work ...
             ----------------------------------------------------------------------------------------------
             """)
-        if matches:
+        if self.matched_items:
             print('----------------------------------------') 
         else:
-            print('No matches.')    
-        for k,v in matches.items():
+            print('No matches.')
+        if self.verbose:
+            self.print_verbose_matches()
+        else: 
+            self.print_matches()    
+        
+    def print_matches(self):
+        for k,v in self.matched_items.items():
+            for appear in set([x[0] for x in v]):
+                print('{}:{}'.format(k[0], appear))
+        
+    def print_verbose_matches(self): 
+        for k,v in self.matched_items.items():
             print('file: {}\nwhat: {}\nvalue: {}\nmatch:'.format(*k))
             for appear in set([x[0] for x in v]):
                 print('    {}'.format(appear))
@@ -146,9 +162,9 @@ class GittyLeak():
 
         self.get_revision_list()
 
-        matched_items = self.get_matches_dict() 
-        
-        self.print_matches(matched_items)
+        self.matched_items = self.get_matches_dict() 
+
+        self.printer()
 
         if self.delete and (self.user and self.repo) or self.link:
             rm('-rf', '../' + self.repo)
@@ -161,8 +177,12 @@ def get_args_parser():
     parser.add_argument('-link', '-l', help='Default is to load from github, provide the full url (link) to clone that instead') 
     parser.add_argument('-delete', '-d', action='store_true',
                         help = 'If cloned, remove the repo afterwards')
+    parser.add_argument('-verbose', '-v', action='store_true',
+                        help = 'If flag given, print verbose matches')
     parser.add_argument('--find-anything', '-a', action='store_true',
                         help='If you really want to find anything remotely suspicious, set this flag')
+    parser.add_argument('--case-sensitive', '-c', action='store_true',
+                        help='If you want to be specific about case matching, set this flag')
     parser.add_argument('--excluding', '-e', nargs = '+',
                         help='List of words that are ignored when they occur as value. E.g. you might want to exclude $ signs whenever they occur in the value')
     return parser
