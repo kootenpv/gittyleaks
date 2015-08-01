@@ -22,22 +22,23 @@ class GittyLeak():
         self.revision_list = []
         self.user = None
         self.repo = None
-        self.url = None
+        self.link = None
         self.strict = None 
         self.case_insensitive = True
         self.show_revision_names = False
         self.print_banner = True
+        self.do_not_delete = None
         
         for k,v in kwargs.items():
             setattr(self, k, v)
         
     def clone(self): 
-        if self.repo is None and (self.user or self.url):
-            raise ValueError('Provide username or url')
+        if self.repo is None and (self.user or self.link):
+            raise ValueError('Provide username or link')
 
-        if self.url is not None:
+        if self.link is not None:
             try:
-                git('clone', self.url)
+                git('clone', self.link)
             except sh.ErrorReturnCode_128:
                 pass 
 
@@ -118,7 +119,7 @@ class GittyLeak():
             ----------------------------------------------------------------------------------------------
             """)
         if matches:
-            print('----------------------------------------')
+            print('----------------------------------------') 
         else:
             print('No matches.')    
         for k,v in matches.items():
