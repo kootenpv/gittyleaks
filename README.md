@@ -5,7 +5,7 @@
 <table>
 <tr>
 <td>
-![gittyleaks](https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png "gittyleaks")
+<img src="https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png" height="400px" width="400px"/>
 </td>
 <td>
 Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. api keys, usernames, passwords and emails are easily added.... and then forgotten. Use this tool to detect where the mistakes are in your repos.
