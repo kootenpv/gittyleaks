@@ -8,7 +8,7 @@
 <img src="https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png" height="400px" width="400px"/>
 </td>
 <td>
-Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. api keys, usernames, passwords and emails are easily added.... and then forgotten. Use this tool to detect where the mistakes are in your repos.
+Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. API keys, usernames, passwords and emails are easily added.... and then forgotten. Use this tool to detect where the mistakes are in your repos.
 </td>
 </tr>
 </table>
@@ -20,13 +20,24 @@ Run like:
 gittyleaks -u kootenpv -r yagmail
 ```
 
-working example:
+another example:
 
-```bash
+```python
 gittyleaks -u smartczy -r weather_py
 ```
 
 It is now already possible to subclass and overwrite certain methods. More docs on that to follow.
+
+#### Installation
+
+Best way is to use pip to install:
+
+```python
+pip install gittyleaks    # for python 2
+pip3 install gittyleaks   # for python 3
+```
+
+upgrades can be done by giving the -U flag; `pip3 install -U`.
 
 #### Roadmap
 
