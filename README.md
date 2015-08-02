@@ -33,27 +33,20 @@ Now you have `gittyleaks` as a python executable available on your system.
 Upgrades can be done by giving the -U flag; `pip3 install -U gittyleaks`.
 
 ### Command line usage 
-Generally, the program can be called by `gittyleaks`. There will be 3 types of arguments.
-- Arguments for cloning a repo
-- Arguments for changing whether there is a hit
+Generally, the program can be called by `gittyleaks`. There will be 4 types of arguments.
 - Arguments for solving a bad situation (not there yet)
+- Arguments for changing whether there is a hit
+- Arguments for cloning a repo
+- Arguments concerned with printing results
 
 Note that all arguments mentioned below have a short one letter + dash (e.g. `-delete` -> `-d`) version.
 
 Find out more by using `gittyleaks -h` at commandline, or read on.
 
-#### Cloning
+#### Solving bad situations
 
-```bash
-# gittyleaks -l some-git-cloneable-link
-gittyleaks -link https://github.com/kootenpv/yagmail
-
-# gittyleaks -user githubusername -repo githubusername
-gittyleaks -user kootenpv -repo yagmail
-
-# Giving the -d option deletes the repo afterwards immediately
-gittyleaks -user smartczy -repo weather_py -delete
-```
+There has yet to be found a way how to help the user do something about it. This guide can help in the mean time:
+[https://help.github.com/articles/remove-sensitive-data/](https://help.github.com/articles/remove-sensitive-data/)
 
 #### Hits
 By default `gittyleaks` tries to be smart about what might be compromising.
@@ -69,6 +62,27 @@ If you want to exclude some string matches (e.g. if a `$` occurs in a value), us
 Case sensitive:
 
 ```gittyleaks --case-sensitive```
+
+#### Cloning
+
+```bash
+# gittyleaks -l some-git-cloneable-link
+gittyleaks -link https://github.com/kootenpv/yagmail
+
+# gittyleaks -user githubusername -repo githubusername
+gittyleaks -user kootenpv -repo yagmail
+
+# Giving the -d option deletes the repo afterwards immediately
+gittyleaks -user smartczy -repo weather_py -delete
+```
+
+### Printing results
+
+``` bash
+gittyleaks --verbose              # longer output
+gittyleaks --no-banner (-b)       # do not print banner 
+gittyleaks --no-fancy-color (-f)  # turn off colors 
+```
 
 ### Roadmap
 

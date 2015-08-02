@@ -41,6 +41,7 @@ class GittyLeak():
         self.delete = None
         self.matched_items = []
         self.verbose = None 
+        self.no_fancy_color = None
 
         self.apply_init_args(kwargs)
 
@@ -125,6 +126,11 @@ class GittyLeak():
                     matches[identifier].append((appearance, rev))
         return matches
 
+    def colorize(self, val, code):
+        if self.no_fancy_color:
+            return val
+        else:    
+            return '\x1b[{}m{}\x1b[0m'.format(code, val)
 
     def printer(self): 
         if not self.no_banner:
@@ -133,9 +139,7 @@ class GittyLeak():
             gittyleaks' Bot Detective at work ...
             --------------------------------------------------------------------
             """)
-        if self.matched_items:
-            print('----------------------------------------') 
-        else:
+        if not self.matched_items: 
             print('No matches.')
         if self.verbose:
             self.print_verbose_matches()
@@ -143,9 +147,15 @@ class GittyLeak():
             self.print_matches()    
         
     def print_matches(self):
+        if self.matched_items:
+            print('----------------------------------------')
+
         for k,v in self.matched_items.items():
             for appear in set([x[0] for x in v]):
-                print('{}:{}'.format(k[0], appear))
+                # 32 is green, 31 is red
+                fname = self.colorize(k[0], '32')
+                match = self.colorize(appear, '31')
+                print('{}:({}): {}'.format(fname, k[1], match))
         
     def print_verbose_matches(self): 
         for k,v in self.matched_items.items():
@@ -173,7 +183,6 @@ class GittyLeak():
         if self.delete and (self.user and self.repo) or self.link:
             rm('-rf', '../' + self.repo)
 
-            
 def get_args_parser():
     p = argparse.ArgumentParser(
         description='Discover where your sensitive data has been leaked.') 
@@ -184,16 +193,18 @@ def get_args_parser():
     p.add_argument('-link', '-l', 
                    help='Provide a link to clone') 
     p.add_argument('-delete', '-d', action='store_true', 
-                   help = 'If cloned, remove the repo afterwards.')
-    p.add_argument('-verbose', '-v', action='store_true', 
-                   help = 'If flag given, print verbose matches.')
+                   help = 'If cloned, remove the repo afterwards.') 
     p.add_argument('--find-anything', '-a', action='store_true', 
                    help='flag: If you want to find anything remotely suspicious.')
     p.add_argument('--case-sensitive', '-c', action='store_true', 
                    help='flag: If you want to be specific about case matching.')
     p.add_argument('--excluding', '-e', nargs = '+', 
                    help='List of words that are ignored occurring as value.')
-    p.add_argument('--no-banner', '-n', action='store_true', 
+    p.add_argument('-verbose', '-v', action='store_true', 
+                   help = 'If flag given, print verbose matches.')
+    p.add_argument('--no-banner', '-b', action='store_true', 
+                   help='Omit the banner at the start of a print statement')
+    p.add_argument('--no-fancy-color', '-f', action='store_true', 
                    help='Omit the banner at the start of a print statement')
     return p
             
