@@ -8,30 +8,18 @@
 <img src="https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png" height="400px" width="600px"/>
 </td>
 <td>
-Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. API keys, usernames, passwords and emails are easily added.... and then forgotten. Use this tool to detect where the mistakes are in your repos.
+
+<p>Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. API keys, usernames, passwords and emails are easily added.... and then forgotten.</p>
+
+<p>Use this tool to detect where the mistakes are in your repos. </p>
+
+<p>It works by trying to find words like 'username', 'password', and 'email' and shortenings in quoted strings, config style or JSON format. It captures the value assigned to it (after meeting some conditions) for further work.</p>
+
 </td>
 </tr>
 </table>
 
-Usage examples:
-
-```python
-# gittyleaks -u username -r repo
-gittyleaks -u kootenpv -r yagmail
-
-# gittyleaks -l some-git-cloneable
-gittyleaks https://github.com/kootenpv/yagmail
-```
-
-another example:
-
-```python
-gittyleaks -u smartczy -r weather_py
-```
-
-By default `gittyleaks` tries to be smart about might be compromising. If you really want to find anything, you can use the '--find-anything' option to find things less likely to be hardcoded.
-
-#### Installation
+### Installation
 
 Best way is to use pip to install:
 
@@ -40,17 +28,58 @@ pip install gittyleaks    # for python 2
 pip3 install gittyleaks   # for python 3
 ```
 
+Now you have `gittyleaks` as a python executable available on your system.
+
 Upgrades can be done by giving the -U flag; `pip3 install -U gittyleaks`.
 
-#### Roadmap
+### Command line usage 
+Generally, the program can be called by `gittyleaks`. There will be 3 types of arguments.
+- Arguments for cloning a repo
+- Arguments for changing whether there is a hit
+- Arguments for solving a bad situation (not there yet)
 
-It is now already possible to subclass and overwrite certain methods. More docs on that to follow.
+Note that all arguments mentioned below have a short one letter + dash (e.g. `-delete` -> `-d`) version.
+
+Find out more by using `gittyleaks -h` at commandline, or read on.
+
+#### Cloning
+
+```bash
+# gittyleaks -l some-git-cloneable-link
+gittyleaks -link https://github.com/kootenpv/yagmail
+
+# gittyleaks -user githubusername -repo githubusername
+gittyleaks -user kootenpv -repo yagmail
+
+# Giving the -d option deletes the repo afterwards immediately
+gittyleaks -user smartczy -repo weather_py -delete
+```
+
+#### Hits
+By default `gittyleaks` tries to be smart about what might be compromising.
+
+If you really want to find anything remotely suspicious:
+
+```gittyleaks --find-anything```
+
+If you want to exclude some string matches (e.g. if a `$` occurs in a value), use:
+
+```gittyleaks --excluding $ . [ example ,```
+
+Case sensitive:
+
+```gittyleaks --case-sensitive```
+
+### Roadmap
 
 ~~Deleting a cloned repo should also be added with perhaps adding the `-d` flag~~
 
-~~Allow user to --find-anything rather than filtering~~
+~~Allow user to `--find-anything` rather than filtering~~
+
+~~Allow subclassing and overwriting certain methods.~~ Docs on that to follow.
 
 The package will soon provide the best practice to remedy this issue based on [https://help.github.com/articles/remove-sensitive-data/](https://help.github.com/articles/remove-sensitive-data/).
 
-After that, quality improvements to the detection will be done.
+Quality improvements to the detection.
 
+Tests, tests, tests

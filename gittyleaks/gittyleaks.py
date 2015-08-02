@@ -14,15 +14,18 @@ def get_immediate_subdirectories():
 
 class GittyLeak():
     def __init__(self, kwargs): 
-        self.keywords = ['api', 'key', 'user', 'username', 'pw', 'pass', 'password', 'mail', 'email']
+        self.keywords = ['api', 'key', 'user', 'username', 'pw', 'pass', 
+                         'password', 'mail', 'email']
 
         self.revision_file_regex = '([a-z0-9]{40}):([^:]+):'
 
         assignment = "(\\b|[ ._-])({})[ '\"]*(=|:)[ '\"]*([^'\" ]+)"
         self.assignment_pattern = assignment.format('|'.join(self.keywords))
 
-        self.excluded_value_chars = ['.', '[', 'none', 'true', 'false', 'null', 'default', 'example', 
-                                     'username', 'email', 'password']
+        self.excluded_value_chars = [
+            '.', '[', 'none', 'true', 'false', 'null', 
+            'default', 'example', 'username', 'email', 'password'
+        ]
 
         self.min_value_length = 4 
 
@@ -34,7 +37,7 @@ class GittyLeak():
         self.find_anything = None 
         self.case_sensitive = False 
         self.show_revision_names = False
-        self.print_banner = True
+        self.no_banner = False
         self.delete = None
         self.matched_items = []
         self.verbose = None 
@@ -53,7 +56,7 @@ class GittyLeak():
 
         if not self.case_sensitive:    
             self.excluded_value_chars = [x.lower() for x in self.excluded_value_chars]    
-            
+
     def clone(self): 
         if self.link is not None:
             try:
@@ -78,7 +81,8 @@ class GittyLeak():
 
     def get_git_matches(self, revision):
         try: 
-            return str(git('grep', '-i', '-e', '"({})"'.format(r'\|'.join(self.keywords)), revision, _tty_out=False))
+            return str(git('grep', '-i', '-e', '"({})"'.format(r'\|'.join(self.keywords)),
+                           revision, _tty_out=False))
         except sh.ErrorReturnCode_1:
             return ''    
 
@@ -123,11 +127,11 @@ class GittyLeak():
 
 
     def printer(self): 
-        if self.print_banner:
+        if not self.no_banner:
             print("""
-            ----------------------------------------------------------------------------------------------
+            --------------------------------------------------------------------
             gittyleaks' Bot Detective at work ...
-            ----------------------------------------------------------------------------------------------
+            --------------------------------------------------------------------
             """)
         if self.matched_items:
             print('----------------------------------------') 
@@ -171,21 +175,27 @@ class GittyLeak():
 
             
 def get_args_parser():
-    parser = argparse.ArgumentParser(description='Discover where your sensitive data has been leaked.') 
-    parser.add_argument('-user', '-u', help='Provide the user/owner of the repo, only if cloning from github') 
-    parser.add_argument('-repo', '-r', help='Provide the name of the repo, only if cloning from github') 
-    parser.add_argument('-link', '-l', help='Default is to load from github, provide the full url (link) to clone that instead') 
-    parser.add_argument('-delete', '-d', action='store_true',
-                        help = 'If cloned, remove the repo afterwards')
-    parser.add_argument('-verbose', '-v', action='store_true',
-                        help = 'If flag given, print verbose matches')
-    parser.add_argument('--find-anything', '-a', action='store_true',
-                        help='If you really want to find anything remotely suspicious, set this flag')
-    parser.add_argument('--case-sensitive', '-c', action='store_true',
-                        help='If you want to be specific about case matching, set this flag')
-    parser.add_argument('--excluding', '-e', nargs = '+',
-                        help='List of words that are ignored when they occur as value. E.g. you might want to exclude $ signs whenever they occur in the value')
-    return parser
+    p = argparse.ArgumentParser(
+        description='Discover where your sensitive data has been leaked.') 
+    p.add_argument('-user', '-u', 
+                   help='Provide a github username, only if also -repo') 
+    p.add_argument('-repo', '-r', 
+                   help='Provide a github repo, only if also -user') 
+    p.add_argument('-link', '-l', 
+                   help='Provide a link to clone') 
+    p.add_argument('-delete', '-d', action='store_true', 
+                   help = 'If cloned, remove the repo afterwards.')
+    p.add_argument('-verbose', '-v', action='store_true', 
+                   help = 'If flag given, print verbose matches.')
+    p.add_argument('--find-anything', '-a', action='store_true', 
+                   help='flag: If you want to find anything remotely suspicious.')
+    p.add_argument('--case-sensitive', '-c', action='store_true', 
+                   help='flag: If you want to be specific about case matching.')
+    p.add_argument('--excluding', '-e', nargs = '+', 
+                   help='List of words that are ignored occurring as value.')
+    p.add_argument('--no-banner', '-n', action='store_true', 
+                   help='Omit the banner at the start of a print statement')
+    return p
             
 def main():
     """ This is the function that is run from commandline with `gittyleaks` """ 
