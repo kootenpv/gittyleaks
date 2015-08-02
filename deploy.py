@@ -24,4 +24,6 @@ with open('gittyleaks/__init__.py', 'w') as f:
     
 print(sh.python('setup.py', ['sdist', 'upload']))
 
+sh.cd('../')
+
 sh.pip3('install', ['-U', 'gittyleaks'])

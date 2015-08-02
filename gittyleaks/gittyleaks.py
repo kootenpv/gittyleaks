@@ -10,7 +10,7 @@ import os
 import argparse
 
 class GittyLeak():
-    def __init__(self, kwargs): 
+    def __init__(self, kwargs = None): 
         self.keywords = ['api', 'key', 'username', 'user', 'pw', 'password', 
                          'pass', 'email', 'mail']
 
@@ -40,7 +40,8 @@ class GittyLeak():
         self.verbose = None 
         self.no_fancy_color = None
 
-        self.apply_init_args(kwargs)
+        if kwargs is not None: 
+            self.apply_init_args(kwargs)
 
     def apply_init_args(self, kwargs):
         for k,v in kwargs.items():
@@ -172,10 +173,8 @@ class GittyLeak():
 
         self.get_revision_list()
 
-        self.matched_items = self.get_matches_dict() 
-
-        self.printer()
-
+        self.matched_items = self.get_matches_dict()
+        
         if self.delete and (self.user and self.repo) or self.link:
             rm('-rf', '../' + self.repo)
 
@@ -216,3 +215,4 @@ def main():
     args = get_args_parser().parse_args() 
     gl = GittyLeak(args.__dict__)    
     gl.run() 
+    gl.printer()

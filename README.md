@@ -19,6 +19,8 @@
 </tr>
 </table>
 
+**Run `gittyleaks` in a git repo and find out! ([common usage patterns](#command-line-usage) )**
+
 ### Installation
 
 Best way is to use pip to install:
@@ -32,8 +34,8 @@ Now you have `gittyleaks` as a python executable available on your system.
 
 Upgrades can be done by giving the -U flag; `pip3 install -U gittyleaks`.
 
-### Command line usage 
-Generally, the program can be called by `gittyleaks`. There will be 4 types of arguments.
+### Command line usage
+The program can be simply called by `gittyleaks`. There are 4 types of arguments.
 - Arguments for solving a bad situation (not there yet)
 - Arguments for changing whether there is a hit
 - Arguments for cloning a repo
@@ -49,19 +51,13 @@ There has yet to be found a way how to help the user do something about it. This
 [https://help.github.com/articles/remove-sensitive-data/](https://help.github.com/articles/remove-sensitive-data/)
 
 #### Hits
-By default `gittyleaks` tries to be smart about what might be compromising.
 
-If you really want to find anything remotely suspicious:
-
-```gittyleaks --find-anything```
-
-If you want to exclude some string matches (e.g. if a `$` occurs in a value), use:
-
-```gittyleaks --excluding $ . [ example ,```
-
-Case sensitive:
-
-```gittyleaks --case-sensitive```
+```bash
+gittyleaks                               # default "smart" filter 
+gittyleaks --find-anything               # find anything remotely suspicious
+gittyleaks --excluding $ . [ example ,   # exclude some string matches (e.g. `$` occurs)
+gittyleaks --case-sensitive              # set it to be strict about case
+```
 
 #### Cloning
 
@@ -95,5 +91,7 @@ gittyleaks --no-fancy-color (-f)  # turn off colors
 The package will soon provide the best practice to remedy this issue based on [https://help.github.com/articles/remove-sensitive-data/](https://help.github.com/articles/remove-sensitive-data/).
 
 Quality improvements to the detection.
+
+Implementing a best practice deployment `git` hook (i.e. automatically check we do not upload unwanted data, and break deployment if there is)
 
 Tests, tests, tests
