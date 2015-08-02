@@ -23,3 +23,5 @@ with open('gittyleaks/__init__.py', 'w') as f:
     f.write(re.sub('__version__ = "[0-9.]+"', '__version__ = "{}"'.format(version), init))
     
 print(sh.python('setup.py', ['sdist', 'upload']))
+
+sh.pip3('install', ['-U', 'gittyleaks'])

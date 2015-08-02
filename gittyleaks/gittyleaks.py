@@ -145,9 +145,9 @@ class GittyLeak():
             for appear in set([x[0] for x in v]):
                 # 32 is green, 31 is red
                 if not self.no_fancy_color:
-                    fname = colorize(k[0], '32') 
+                    fname = colorize(k[0], '36') 
+                    appear = appear.replace(k[1], colorize(k[1], '33')) 
                     appear = appear.replace(k[2], colorize(k[2], '31')) 
-                    appear = appear.replace(k[1], colorize(k[1], '31')) 
                 else:
                     fname = k[0]    
                     
