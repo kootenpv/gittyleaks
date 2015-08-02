@@ -9,13 +9,10 @@ import sh
 import os
 import argparse
 
-def get_immediate_subdirectories():
-    return set([fname for fname in os.listdir('.') if os.path.isdir(fname)])
-
 class GittyLeak():
     def __init__(self, kwargs): 
-        self.keywords = ['api', 'key', 'user', 'username', 'pw', 'pass', 
-                         'password', 'mail', 'email']
+        self.keywords = ['api', 'key', 'username', 'user', 'pw', 'password', 
+                         'pass', 'email', 'mail']
 
         self.revision_file_regex = '([a-z0-9]{40}):([^:]+):'
 
@@ -126,12 +123,6 @@ class GittyLeak():
                     matches[identifier].append((appearance, rev))
         return matches
 
-    def colorize(self, val, code):
-        if self.no_fancy_color:
-            return val
-        else:    
-            return '\x1b[{}m{}\x1b[0m'.format(code, val)
-
     def printer(self): 
         if not self.no_banner:
             print("""
@@ -153,9 +144,14 @@ class GittyLeak():
         for k,v in self.matched_items.items():
             for appear in set([x[0] for x in v]):
                 # 32 is green, 31 is red
-                fname = self.colorize(k[0], '32')
-                match = self.colorize(appear, '31')
-                print('{}:({}): {}'.format(fname, k[1], match))
+                if not self.no_fancy_color:
+                    fname = colorize(k[0], '32') 
+                    appear = appear.replace(k[2], colorize(k[2], '31')) 
+                    appear = appear.replace(k[1], colorize(k[1], '31')) 
+                else:
+                    fname = k[0]    
+                    
+                print('{}: {}'.format(fname, appear))
         
     def print_verbose_matches(self): 
         for k,v in self.matched_items.items():
@@ -183,6 +179,13 @@ class GittyLeak():
         if self.delete and (self.user and self.repo) or self.link:
             rm('-rf', '../' + self.repo)
 
+
+def get_immediate_subdirectories():
+    return set([fname for fname in os.listdir('.') if os.path.isdir(fname)])
+
+def colorize(val, code): 
+    return '\x1b[{}m{}\x1b[0m'.format(code, val)
+            
 def get_args_parser():
     p = argparse.ArgumentParser(
         description='Discover where your sensitive data has been leaked.') 
