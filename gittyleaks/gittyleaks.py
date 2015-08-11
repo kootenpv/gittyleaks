@@ -206,7 +206,7 @@ def get_args_parser():
                    help='flag: If you want to be specific about case matching.')
     p.add_argument('--excluding', '-e', nargs = '+', 
                    help='List of words that are ignored occurring as value.')
-    p.add_argument('-verbose', '-v', action='store_true', 
+    p.add_argument('--verbose', '-v', action='store_true', 
                    help = 'If flag given, print verbose matches.')
     p.add_argument('--no-banner', '-b', action='store_true', 
                    help='Omit the banner at the start of a print statement')
