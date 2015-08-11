@@ -10,7 +10,8 @@ import argparse
 class GittyLeak():
     def __init__(self, kwargs = None): 
         self.keywords = ['api', 'key', 'username', 'user', 'uname', 'pw', 'password', 
-                         'pass', 'email', 'mail', 'credentials', 'credential', 'login']
+                         'pass', 'email', 'mail', 'credentials', 'credential', 'login', 
+                         'token', 'secret']
 
         self.revision_file_regex = '([a-z0-9]{40}):([^:]+):'
 
