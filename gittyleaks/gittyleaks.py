@@ -1,6 +1,4 @@
-# Run like: gittyleaks username reponame
-# e.g. gittyleaks kootenpv yagmail
-# working example: gittyleaks smartczy weather_py
+# change into git python
 
 import re
 from sh import git
@@ -11,8 +9,8 @@ import argparse
 
 class GittyLeak():
     def __init__(self, kwargs = None): 
-        self.keywords = ['api', 'key', 'username', 'user', 'pw', 'password', 
-                         'pass', 'email', 'mail']
+        self.keywords = ['api', 'key', 'username', 'user', 'uname', 'pw', 'password', 
+                         'pass', 'email', 'mail', 'credentials', 'credential', 'login']
 
         self.revision_file_regex = '([a-z0-9]{40}):([^:]+):'
 
@@ -80,10 +78,14 @@ class GittyLeak():
 
     def get_git_matches(self, revision):
         try: 
-            return str(git('grep', '-i', '-e', '"({})"'.format(r'\|'.join(self.keywords)),
-                           revision, _tty_out=False))
+            return str(git('grep', '-i', '-e', '"({})"'.format(r'\|'.join(self.keywords)), 
+                       revision, _tty_out=False))
+        # return subprocess.check_output('git grep -i -e "(api\\|key\\|username\\|user\\|pw\\|password\\|pass\\|email\\|mail)" -- `git ls-files | grep -v .html` | cat', shell=True).decode('utf8')
         except sh.ErrorReturnCode_1:
-            return ''    
+            return ''  
+        except: 
+            print('encoding error at revision: ', revision)
+            return ''
 
     def get_word_matches(self):
         # git grep simple word matches (python processing follows)
@@ -108,11 +110,12 @@ class GittyLeak():
     
     def get_matches_dict(self):
         matches = {}
-        for match in self.get_word_matches():
+        for match in self.get_word_matches(): 
             if self.case_sensitive:
                 m = re.search(self.assignment_pattern, match)
             else: 
                 m = re.search(self.assignment_pattern, match, re.IGNORECASE)
+                
             if m: 
                 rev, fname = (re.search(self.revision_file_regex, match).groups()) 
                 key, _, value = m.groups()[1:]
@@ -122,6 +125,7 @@ class GittyLeak():
                     if identifier not in matches:
                         matches[identifier] = [] 
                     matches[identifier].append((appearance, rev))
+                    
         return matches
 
     def printer(self): 
@@ -214,5 +218,8 @@ def main():
     """ This is the function that is run from commandline with `gittyleaks` """ 
     args = get_args_parser().parse_args() 
     gl = GittyLeak(args.__dict__)    
-    gl.run() 
+    try:
+        gl.run() 
+    except KeyboardInterrupt:
+        print('gittyleaks user interupted')    
     gl.printer()

@@ -69,7 +69,6 @@ gittyleaks -link https://github.com/kootenpv/yagmail
 gittyleaks -user kootenpv -repo yagmail
 
 # Giving the -d option deletes the repo afterwards immediately
-gittyleaks -user smartczy -repo weather_py -delete
 ```
 
 ### Printing results
