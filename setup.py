@@ -14,7 +14,7 @@ setup(name = 'gittyleaks',
       license = 'GPL',
       packages = ['gittyleaks'],
       install_requires = [ 
-          'scandir',
+          'scandir', 'sh'
       ], 
       entry_points = { 
           'console_scripts': ['gittyleaks = gittyleaks.gittyleaks:main'] 
