@@ -1,13 +1,7 @@
 # gittyleaks
 
+<img src="https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png" height="300px" width="120px"/>
 #### Discover where your sensitive data has been leaked.
-
-<table>
-<tr>
-<td>
-<img src="https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png" height="400px" width="600px"/>
-</td>
-<td>
 
 <p>Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. API keys, usernames, passwords and emails are easily added.... and then forgotten.</p>
 
@@ -53,7 +47,7 @@ There has yet to be found a way how to help the user do something about it. This
 #### Hits
 
 ```bash
-gittyleaks                               # default "smart" filter 
+gittyleaks                               # default "smart" filter
 gittyleaks --find-anything               # find anything remotely suspicious
 gittyleaks --excluding $ . [ example ,   # exclude some string matches (e.g. `$` occurs)
 gittyleaks --case-sensitive              # set it to be strict about case
@@ -75,8 +69,8 @@ gittyleaks -user kootenpv -repo yagmail
 
 ``` bash
 gittyleaks --verbose              # longer output
-gittyleaks --no-banner (-b)       # do not print banner 
-gittyleaks --no-fancy-color (-f)  # turn off colors 
+gittyleaks --no-banner (-b)       # do not print banner
+gittyleaks --no-fancy-color (-f)  # turn off colors
 ```
 
 ### Roadmap
