@@ -218,7 +218,7 @@ def get_args_parser():
     p.add_argument('--no-banner', '-b', action='store_true',
                    help='Omit the banner at the start of a print statement')
     p.add_argument('--no-fancy-color', '-f', action='store_true',
-                   help='Omit the banner at the start of a print statement')
+                   help='Do not colorize output')
     return p
 
 
