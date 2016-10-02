@@ -40,6 +40,7 @@ class GittyLeak():
         self.matched_items = []
         self.verbose = None
         self.no_fancy_color = None
+        self.BANNER_WIDTH = 80
 
         if kwargs is not None:
             self.apply_init_args(kwargs)
@@ -135,11 +136,9 @@ class GittyLeak():
 
     def printer(self):
         if not self.no_banner:
-            print("""
-            --------------------------------------------------------------------
-            gittyleaks' Bot Detective at work ...
-            --------------------------------------------------------------------
-            """)
+            print("{}\n{}\n{}".format("-" * self.BANNER_WIDTH,
+                "gittyleaks' Bot Detective at work ...".center(self.BANNER_WIDTH),
+                "-" * self.BANNER_WIDTH))
         if not self.matched_items:
             print('No matches.')
         if self.verbose:
@@ -218,7 +217,7 @@ def get_args_parser():
     p.add_argument('--no-banner', '-b', action='store_true',
                    help='Omit the banner at the start of a print statement')
     p.add_argument('--no-fancy-color', '-f', action='store_true',
-                   help='Omit the banner at the start of a print statement')
+                   help='Do not colorize output')
     return p
 
 
