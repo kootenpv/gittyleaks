@@ -1,6 +1,7 @@
 # gittyleaks
 
 <img src="https://github.com/kootenpv/gittyleaks/raw/master/resources/gittyleaks.png" height="300px" width="120px"/>
+
 #### Discover where your sensitive data has been leaked.
 
 <p>Very often it happens that when mocking/just starting out with a new project on github, sensitive data gets added. API keys, usernames, passwords and emails are easily added.... and then forgotten.</p>
