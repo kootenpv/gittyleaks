@@ -1,3 +1,3 @@
-from .cdp import main
+from .gittyleaks import main
 
 main()
