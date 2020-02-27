@@ -29,6 +29,7 @@ class GittyLeak():
 
         self.excluding = None
         self.revision_list = []
+        self.search_only_head = False
         self.user = None
         self.repo = None
         self.link = None
@@ -78,7 +79,10 @@ class GittyLeak():
         os.chdir(self.repo)
 
     def get_revision_list(self):
-        self.revision_list = git('rev-list', '--all').strip().split('\n')
+       if self.search_only_head:
+           self.revision_list = git('rev-parse', 'HEAD').strip().split('\n')
+       else:
+           self.revision_list = git('rev-list', '--all').strip().split('\n')
 
     def get_git_matches(self, revision):
         try:
@@ -208,6 +212,8 @@ def get_args_parser():
                    help='If cloned, remove the repo afterwards.')
     p.add_argument('--find-anything', '-a', action='store_true',
                    help='flag: If you want to find anything remotely suspicious.')
+    p.add_argument('--search-only-head', '-o', action='store_true',
+                   help='If flag given, only search HEAD not all commit history.')
     p.add_argument('--case-sensitive', '-c', action='store_true',
                    help='flag: If you want to be specific about case matching.')
     p.add_argument('--excluding', '-e', nargs='+',
