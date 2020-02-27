@@ -74,7 +74,11 @@ class GittyLeak():
                 git('clone', 'https://github.com/{}/{}.git'.format(self.user, self.repo))
 
             except sh.ErrorReturnCode_128:
-                pass
+                try:
+                    # for Private Repository
+                    git('clone', 'git@github.com:{}/{}.git'.format(self.user, self.repo))
+                except sh.ErrorReturnCode_128:
+                    pass
 
         os.chdir(self.repo)
 
